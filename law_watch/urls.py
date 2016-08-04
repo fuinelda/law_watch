@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from law_watch.view import watch
+from law_watch.views import watch, detail
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', watch),
+    url(r'^detail/(?P<billId>\w+)$', detail, name = 'detail'),
 ]

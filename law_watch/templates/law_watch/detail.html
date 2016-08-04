@@ -1,0 +1,18 @@
+<!doctype HTML>
+<html>
+<head>
+	<title>Law_Watch</title>
+
+</head>
+<body>
+	디테일 페이지 </br>
+	{{billId.bill_id}}
+	<p></p>
+	<script>
+//		var a = JSON.parse('{{billId.bill_json}}'.replace(/&#39;/g,'"').replace(/\r/g,'\\r').replace(/\n/g,'\\n'));
+		var a = JSON.parse('{{billId.bill_json}}'.replace(/&#39;/g,'"').replace(/\r\n/g,'\<br \/\>'));
+		//var b = '{{billId.bill_json}}'.replace(/&#39;/g,'"').replace(/\r/g,'\\r').replace(/\n/g,'\\n');
+		document.getElementsByTagName('p')[0].innerHTML = a.summary;
+	</script>
+</body>
+</html>

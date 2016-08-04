@@ -1,0 +1,12 @@
+<!doctype HTML>
+<html>
+<head>
+	<title>Law_Watch</title>
+</head>
+<body>
+	<p>이게 템플릿이지!</p>
+	{% for law in lawlist %}
+		<div><a href = '{% url 'detail' law.bill_id %}'>{{law.bill_json.billName}}</a></div>
+	{% endfor%}
+</body>
+</html>
