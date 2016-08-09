@@ -2,17 +2,40 @@
 <html>
 <head>
 	<title>Law_Watch</title>
-
+	{% load static %}
+	<link rel='stylesheet' href='{% static 'law_watch/style.css' %}' />
+	<script src= '{% static 'law_watch/js/common.js' %}'></script>
+	
 </head>
 <body>
-	디테일 페이지 </br>
-	{{billId.bill_id}}
-	<p></p>
-	<script>
-//		var a = JSON.parse('{{billId.bill_json}}'.replace(/&#39;/g,'"').replace(/\r/g,'\\r').replace(/\n/g,'\\n'));
-		var a = JSON.parse('{{billId.bill_json}}'.replace(/&#39;/g,'"').replace(/\r\n/g,'\<br \/\>'));
-		//var b = '{{billId.bill_json}}'.replace(/&#39;/g,'"').replace(/\r/g,'\\r').replace(/\n/g,'\\n');
-		document.getElementsByTagName('p')[0].innerHTML = a.summary;
-	</script>
+	<p>{{billinfolist.bill_json.billName}}</p>
+	제안일자 : {{billinfolist.bill_json.proposeDt}}<br />
+	처리구분 : {{billinfolist.bill_json.passGubn}}<br />
+	의결일자 : {{billinfolist.bill_json.procDt}}<br />
+	의결결과 : {{billinfolist.bill_json.generalResult}}<br />
+	심사진행상태 : {{billinfolist.bill_json.procStageCd}}<br />
+	주요내용 : {{billinfolist.bill_json.summary|linebreaks}}<br />
+	제안자 : <br />
+	<!--
+	{% for member in billinfolist.bill_member_json.item %}
+		{{ forloop.counter }}. <br />
+		소속정당 : {{member.polyNm}} <br />
+		위원명 : {{member.memName}}({{member.hjNm}}) <br />
+		제안자/철회자 구분 : {{member.gbnCd}} <br />
+		구분1 : {{member.gbn1}} <br />
+		구분2 : {{member.gbn2}} <br />
+	{% endfor %}-->
+	{% regroup billinfolist.bill_member_json.item by memName as member_by_name %}
+	{% for member in member_by_name|dictsort:"grouper" %}
+		<span>
+			소속정당 : {{member.list.0.polyNm}} <br />
+			위원명 : {{member.grouper}}({{member.list.0.hjNm}}) <br />
+			{% for member_each in member.list %}
+				제안자/철회자 구분 : {{member_each.gbnCd}} <br />
+			구분1 : {{member_each.gbn1}} <br />
+			구분2 : {{member_each.gbn2}} <br />
+			{% endfor %}
+		</span>
+	{% endfor %}
 </body>
 </html>

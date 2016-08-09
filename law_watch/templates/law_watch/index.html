@@ -2,11 +2,20 @@
 <html>
 <head>
 	<title>Law_Watch</title>
+	{% load static %}
+	<link rel='stylesheet' type='text/css' href='{% static 'law_watch/style.css' %}' />
 </head>
 <body>
-	<p>이게 템플릿이지!</p>
-	{% for law in lawlist %}
-		<div><a href = '{% url 'detail' law.bill_id %}'>{{law.bill_json.billName}}</a></div>
-	{% endfor%}
+	<div>
+		<p>최근 계류의안</p>
+		{% for law in lawlist.all %}
+			<div><a href = '{% url 'detail' law.bill_id %}'>{{law.bill_json.billName}}</a></div>
+		{% endfor%}
+	</div>
+	<div>
+		<p>대표자 정당별 계류의안 수</p>
+		새누리당 : 
+			{{ lawlist.saenuri }}
+	</div>
 </body>
 </html>

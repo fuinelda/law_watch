@@ -1,0 +1,10 @@
+a:visited{
+color:green;
+}
+
+span{
+border : 1px solid blue;
+display : inline-block;
+padding : 5px;
+margin : 5px;
+}

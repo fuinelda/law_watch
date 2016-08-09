@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from law_watch.views import watch, detail
+from law_watch import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', watch),
-    url(r'^detail/(?P<billId>\w+)$', detail, name = 'detail'),
+    url(r'^$', views.WatchView.as_view(), name = 'watch'),
+    url(r'^detail/(?P<pk>\w+)$', views.DetailView.as_view(), name = 'detail'),
 ]

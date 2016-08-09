@@ -1,17 +1,21 @@
 #from django.http import HttpResponse
 #from django.template import loader
 from django.shortcuts import render
+from django.views import generic
 
 from law_watch import models
 
-'''def watch(request):
-	template = loader.get_template('law_watch/index.html')
-	return HttpResponse(template.render(request))'''
+class WatchView(generic.ListView):
+	template_name = 'law_watch/index.html'
+	context_object_name = 'lawlist'
 	
-def watch(request):
-	law_lists = models.BillInfoList.objects.all()
-	return render(request, 'law_watch/index.html', {'lawlist' : law_lists})
+	def get_queryset(self):
+		return {'all' : models.BillInfoList.objects.all()[:3], \
+		'saenuri' :  models.BillInfoList.objects.filter(bill_member_json__item__contains = '[{"polyNm":"새누리당"}]')}
+	
+	def get_by_party():
+		return "파티다!"
 
-def detail(request, billId):
-	billRow = models.BillInfoList.objects.filter(bill_id=billId)
-	return render(request, 'law_watch/detail.html', {'billId' : billRow[0]})
+class DetailView(generic.DetailView):
+	model = models.BillInfoList
+	template_name = 'law_watch/detail.html'

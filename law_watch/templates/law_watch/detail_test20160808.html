@@ -1,0 +1,21 @@
+<!doctype HTML>
+<html>
+<head>
+	<title>Law_Watch</title>
+	{% load static %}
+	<script src= '{% static 'law_watch/js/common.js' %}'></script>
+	<script>
+	window.onload = function(){
+		var a = JSON.parse(toJson('{{billinfolist.bill_json}}'));
+		//var a = JSON.parse('{{billinfolist.bill_json|escapejs}}');
+		//var b = '{{billId.bill_json}}'.replace(/&#39;/g,'"').replace(/\r/g,'\\r').replace(/\n/g,'\\n');
+		document.getElementsByTagName('p')[0].innerHTML = a.summary;
+		};
+	</script>
+</head>
+<body>
+	디테일 페이지 </br>
+	<p></p>
+	
+</body>
+</html>
