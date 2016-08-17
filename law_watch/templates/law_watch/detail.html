@@ -3,39 +3,137 @@
 <head>
 	<title>Law_Watch</title>
 	{% load static %}
-	<link rel='stylesheet' href='{% static 'law_watch/style.css' %}' />
+	<link rel='stylesheet' href='{% static 'law_watch/css/style.css' %}' />
+	<link rel='stylesheet' href='{% static 'law_watch/css/detail.css' %}' />
 	<script src= '{% static 'law_watch/js/common.js' %}'></script>
 	
 </head>
 <body>
-	<p>{{billinfolist.bill_json.billName}}</p>
-	제안일자 : {{billinfolist.bill_json.proposeDt}}<br />
-	처리구분 : {{billinfolist.bill_json.passGubn}}<br />
-	의결일자 : {{billinfolist.bill_json.procDt}}<br />
-	의결결과 : {{billinfolist.bill_json.generalResult}}<br />
-	심사진행상태 : {{billinfolist.bill_json.procStageCd}}<br />
-	주요내용 : {{billinfolist.bill_json.summary|linebreaks}}<br />
-	제안자 : <br />
-	<!--
-	{% for member in billinfolist.bill_member_json.item %}
-		{{ forloop.counter }}. <br />
-		소속정당 : {{member.polyNm}} <br />
-		위원명 : {{member.memName}}({{member.hjNm}}) <br />
-		제안자/철회자 구분 : {{member.gbnCd}} <br />
-		구분1 : {{member.gbn1}} <br />
-		구분2 : {{member.gbn2}} <br />
-	{% endfor %}-->
-	{% regroup billinfolist.bill_member_json.item by memName as member_by_name %}
-	{% for member in member_by_name|dictsort:"grouper" %}
-		<span>
-			소속정당 : {{member.list.0.polyNm}} <br />
-			위원명 : {{member.grouper}}({{member.list.0.hjNm}}) <br />
-			{% for member_each in member.list %}
-				제안자/철회자 구분 : {{member_each.gbnCd}} <br />
-			구분1 : {{member_each.gbn1}} <br />
-			구분2 : {{member_each.gbn2}} <br />
+	<h1>{{billinfolist.bill_json.billName}}</h1>
+	<table>
+		<tr>
+			<td class='subject'>심사진행상태 </td><td colspan = 3> {{billinfolist.bill_json.procStageCd}}</td>
+		</tr>
+		<tr>
+			<td class='subject'>제안일자 </td><td> {{billinfolist.bill_json.proposeDt}}</td>
+			<td class='subject'>처리구분 </td><td> {{billinfolist.bill_json.passGubn}}</td>
+		</tr>
+		<tr>
+			<td class='subject'>의결일자 </td><td> {{billinfolist.bill_json.procDt}}</td>
+			<td class='subject'>의결결과 </td><td> {{billinfolist.bill_json.generalResult}}</td>
+		</tr>
+		
+		<tr>
+			<td class='subject'>주요내용 </td><td colspan = 3> {{billinfolist.bill_json.summary|linebreaks}}</td>
+		</tr>
+	</table>
+	제안자<br /><br />
+	<div class='billmember'>
+		<span class='tabbtn' id='tabtnpolyNm' onclick = 'showtab(this,"mempoly")'>정당별</span>
+		<span class='tabbtn' id='tabtngbn1' onclick = "showtab(this,'memgbn1')">구분1별</span>
+		<span class='tabbtn' id='tabtngbn2' onclick = "showtab(this,'memgbn2')">구분2별</span>
+		<span class='tabbtn' id='tabtngbncd' onclick = "showtab(this,'memgbncd')">제안자/철회자 구분</span>
+		<div class='tabcontent' id = 'memdefault'>
+			{# 기본배열, 가나다순 #}
+			{% regroup billinfolist.bill_member_json.item|dictsort:'memName' by memName as member_by_name %}
+			{% for member in member_by_name %}
+				<span class='memeach'>
+					<p>{{member.list.0.polyNm}} <br />
+					{{member.grouper}}({{member.list.0.hjNm}}) </p>
+					{% for member_each in member.list %}
+						제안자/철회자 구분 : {{member_each.gbnCd}} <br />
+						구분1 : {{member_each.gbn1}} <br />
+						구분2 : {{member_each.gbn2}} <br />
+					{% endfor %}
+				</span>
 			{% endfor %}
-		</span>
-	{% endfor %}
+		</div>
+		<div class='tabcontent' id = 'mempoly' style='display:none;'>
+			{# 정당별 #}
+			{% regroup billinfolist.bill_member_json.item|dictsort:'polyNm' by polyNm as member_by_polyNm %}
+			{% for member_poly in member_by_polyNm|dictsort:"grouper" %}
+				<div class = 'insidetab' value = '{{member_by_polyNm|length}}'>
+				{% regroup member_poly.list|dictsort:'memName' by memName as member_each %}
+				{{member_poly.grouper}}<br />
+				{% for member in member_each|dictsort:"grouper" %}
+					<span class='memeach'>
+				
+						<!--소속정당 : {{member_poly.grouper}} <br />-->
+						<p>{{member.grouper}}({{member.list.0.hjNm}}) </p>
+						{% for member_1 in member.list %}
+							제안자/철회자 구분 : {{member_1.gbnCd}} <br />
+							구분1 : {{member_1.gbn1}} <br />
+							구분2 : {{member_1.gbn2}} <br />
+						{% endfor %}
+					</span>
+				{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+		<div class='tabcontent' id='memgbn1' style='display:none;'>
+			{# 구분1별 #}
+			{% regroup billinfolist.bill_member_json.item|dictsort:'gbn1' by gbn1 as member_by_gbn1 %}
+			
+			{% for member_gbn1 in member_by_gbn1|dictsort:"grouper" %}
+				<div class = 'insidetab' value = '{{member_by_gbn1|length}}'>
+				{{member_gbn1.grouper}}<br />
+				{% regroup member_gbn1.list|dictsort:'memName' by memName as member_each %}
+				{% for member in member_each|dictsort:"grouper" %}
+					<span class='memeach'>
+						<p>{{member.list.0.polyNm}} <br />
+						{{member.grouper}}({{member.list.0.hjNm}})</p>
+						{% for member_1 in member.list %}
+							제안자/철회자 구분 : {{member_1.gbnCd}} <br />
+							<!--구분1 : {{member_1.gbn1}} <br />-->
+							구분2 : {{member_1.gbn2}} <br />
+						{% endfor %}
+					</span>
+				{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+		<div class='tabcontent' id='memgbn2' style='display:none;'>
+			{# 구분2별 #}
+			{% regroup billinfolist.bill_member_json.item|dictsort:'gbn2' by gbn2 as member_by_gbn2 %}
+			{% for member_gbn2 in member_by_gbn2|dictsort:"grouper" %}
+				<div class = 'insidetab' value = '{{member_by_gbn2|length}}'>
+				{{member_gbn2.grouper}}<br />
+				{% regroup member_gbn2.list|dictsort:'memName' by memName as member_each %}
+				{% for member in member_each|dictsort:"grouper" %}
+					<span class='memeach'>
+						<p>{{member.list.0.polyNm}} <br />
+						{{member.grouper}}({{member.list.0.hjNm}}) </p>
+						{% for member_1 in member.list %}
+							제안자/철회자 구분 : {{member_1.gbnCd}} <br />
+							구분1 : {{member_1.gbn1}} <br />
+							<!--구분2 : {{member_1.gbn2}} <br />-->
+						{% endfor %}
+					</span>
+				{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+		<div class='tabcontent' id = 'memgbncd' style='display:none;'>
+			{# 제안자/철회자 구분 별 #}
+			{% regroup billinfolist.bill_member_json.item|dictsort:'gbnCd' by gbnCd as member_by_gbnCd %}
+			{% for member_gbnCd in member_by_gbnCd|dictsort:"grouper" %}
+				<div class = 'insidetab' value = '{{member_by_gbnCd|length}}'>
+				{{member_gbnCd.grouper}}<br />
+				{% regroup member_gbnCd.list|dictsort:'memName' by memName as member_each %}
+				{% for member in member_each|dictsort:"grouper" %}
+					<span class='memeach'>
+						<p>{{member.list.0.polyNm}} <br />
+						{{member.grouper}}({{member.list.0.hjNm}}) </p>
+						{% for member_1 in member.list %}
+							<!--제안자/철회자 구분 : {{member_1.gbnCd}} <br />-->
+							구분1 : {{member_1.gbn1}} <br />
+							구분2 : {{member_1.gbn2}} <br />
+						{% endfor %}
+					</span>
+				{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 </body>
 </html>

@@ -1,0 +1,53 @@
+table{
+margin:10px;
+border:3px solid lightblue;
+border-collapse:collapse;
+}
+
+td{
+padding: 5px;
+border:1px solid lightblue;
+}
+
+.subject{
+width:7em;
+background:#9999ff;
+text-align:center;
+font-weight : bold;
+}
+
+.billmember .memeach{
+border : 1px solid blue;
+display : inline-block;
+padding : 5px;
+margin : 5px;
+border-radius:10px;
+padding:1em;
+text-align:center;
+font-size:12px;
+}
+
+.memeach p{
+font-size:14px;
+font-weight:bold;
+}
+
+.insidetab{
+border:1px dotted gray;
+display : inline-block;
+vertical-align:top;
+}
+
+.tabbtn{
+border:2px solid lightgray;
+padding:5px;
+border-radius:5px 5px 0 0;
+margin: 0px;
+}
+
+.tabcontent{
+border:2px solid lightgray;
+padding:5px;
+border-radius:0 10px;
+margin:5px 0;
+}

@@ -4,6 +4,48 @@
 	<title>Law_Watch</title>
 	{% load static %}
 	<link rel='stylesheet' type='text/css' href='{% static 'law_watch/style.css' %}' />
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script>
+	window.onload = function(){
+		var datas = [{{ lawlist.saenuri|length }}, {{ lawlist.kukmin|length }}, {{ lawlist.together|length }}];
+		var polycolor = ['red', 'green', 'blue'];
+		var swidth = 600;
+		var svg = d3.select('#polynumgraph')
+		.append('svg')
+		.attr('width',swidth)
+		.attr('height',100);
+		
+		svg.selectAll('rect')
+		.data(datas)
+		.enter()
+		.append('rect')
+		.attr('x', function(d, i){
+			//return i * (swidth/datas.length);
+			if(i == 0)	return 0;
+			else	return swidth * ( sumto(datas,(i-1))/sumto(datas,datas.length-1));
+		})
+		.attr('width', function(d, i){
+			//console.log(i, sumto(datas, datas.length-1));
+			return swidth * ( d/sumto(datas, datas.length-1));
+		})
+		.attr('height', function(d){
+			return 100;
+		})
+		.attr('fill', function(d, i) {
+			return polycolor[i];
+		});
+	};
+	
+	function sumto(data, i){
+		var ret = 0;
+		for(j = 0;j<=i;j++){
+			ret += data[j];
+			//console.log('ret = ',ret);
+		}
+		return ret;
+	}
+	
+	</script>
 </head>
 <body>
 	<div>
@@ -14,8 +56,10 @@
 	</div>
 	<div>
 		<p>대표자 정당별 계류의안 수</p>
-		새누리당 : 
-			{{ lawlist.saenuri }}
+		<div id='polynumgraph'></div>
+		새누리당 : {{ lawlist.saenuri|length }} | 
+		국민의당 : {{ lawlist.kukmin|length }} |
+		더불어민주당 : {{ lawlist.together|length }}
 	</div>
 </body>
 </html>
