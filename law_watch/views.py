@@ -13,7 +13,9 @@ class WatchView(generic.ListView):
 		return {'all' : models.BillInfoList.objects.all()[:3], \
 		'saenuri' :  models.BillInfoList.objects.filter(bill_member_json__item__contains = '[{"polyNm":"새누리당"}]'),
 		'kukmin' :  models.BillInfoList.objects.filter(bill_member_json__item__contains = '[{"polyNm":"국민의당"}]'),
-		'together' :  models.BillInfoList.objects.filter(bill_member_json__item__contains = '[{"polyNm":"더불어민주당"}]')}
+		'together' :  models.BillInfoList.objects.filter(bill_member_json__item__contains = '[{"polyNm":"더불어민주당"}]'),
+		'justice' :  models.BillInfoList.objects.filter(bill_member_json__item__contains = '[{"polyNm":"정의당"}]'),
+		'noparty' :  models.BillInfoList.objects.filter(bill_member_json__item__contains = '[{"polyNm":"무소속"}]')}
 	
 	def get_by_party():
 		return "파티다!"

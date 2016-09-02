@@ -7,15 +7,15 @@
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script>
 	window.onload = function(){
-		var datas = [{{ lawlist.saenuri|length }}, {{ lawlist.kukmin|length }}, {{ lawlist.together|length }}];
-		var polycolor = ['red', 'green', 'blue'];
+		var datas = [{{ lawlist.saenuri|length }}, {{ lawlist.kukmin|length }}, {{ lawlist.together|length }}, {{ lawlist.justice|length }}, {{ lawlist.noparty|length }}];
+		var polycolor = ['red', 'green', 'blue','yellow','grey'];
 		var swidth = 600;
 		var svg = d3.select('#polynumgraph')
 		.append('svg')
 		.attr('width',swidth)
 		.attr('height',100);
 		
-		svg.selectAll('rect')
+		var rect = svg.selectAll('rect')
 		.data(datas)
 		.enter()
 		.append('rect')
@@ -24,15 +24,17 @@
 			if(i == 0)	return 0;
 			else	return swidth * ( sumto(datas,(i-1))/sumto(datas,datas.length-1));
 		})
-		.attr('width', function(d, i){
-			//console.log(i, sumto(datas, datas.length-1));
-			return swidth * ( d/sumto(datas, datas.length-1));
-		})
+		.attr('y',50)
+		.attr('width', 1)
 		.attr('height', function(d){
-			return 100;
+			return 50;
 		})
 		.attr('fill', function(d, i) {
 			return polycolor[i];
+		});
+		
+		rect.transition().attr('width',function(d, i){
+			return swidth * ( d/sumto(datas, datas.length-1));
 		});
 	};
 	
@@ -59,7 +61,9 @@
 		<div id='polynumgraph'></div>
 		새누리당 : {{ lawlist.saenuri|length }} | 
 		국민의당 : {{ lawlist.kukmin|length }} |
-		더불어민주당 : {{ lawlist.together|length }}
+		더불어민주당 : {{ lawlist.together|length }}|
+		정의당 : {{ lawlist.justice|length }}|
+		무소속 : {{ lawlist.noparty|length }}
 	</div>
 </body>
 </html>
